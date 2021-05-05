@@ -13,10 +13,19 @@ Web API for a Dapr state store for validating messages against schemas that are 
 
 1. Run using Dapr.
 
+   > **Note**: `--app-id` value must match the app id used with `dapr run` for the publisher.
+
     ```
-        dapr run --app-id schema-registry-api --app-port 5000 -- dotnet run
+        dapr run --app-id publisher --app-port 5100 -- dotnet run --urls "http://localhost:5100"
     ```
 
-2. Browse to http://localhost:5000/swagger/index.html.
+2. Browse to http://localhost:5100/swagger/index.html.
    - Execute Get, Post, Put, Delete
    - Use `v1.person-schema.json` in **json** folder.
+    
+3. To view all the registered topics for the publisher, you can connect to the Redis container directly and use the redis-cli.
+
+    ```
+    docker run --rm -it --link dapr_redis redis redis-cli -h dapr_redis
+    KEYS publisher*
+    ```

@@ -1,16 +1,16 @@
+using EventDriven.SchemaRegistry.Dapr;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
 namespace EventDriven.SchemaRegistry.Api
 {
     public class Startup
     {
-        private const string DaprStateStore = "statestore";
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -26,8 +26,13 @@ namespace EventDriven.SchemaRegistry.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "EventDriven.SchemaRegistry.Api", Version = "v1"});
             });
-
-            services.AddDaprSchemaRegistry(DaprStateStore);
+            
+            // Configuration
+            var stateStoreOptions = new DaprStateStoreOptions();
+            Configuration.GetSection(nameof(DaprStateStoreOptions)).Bind(stateStoreOptions);
+            
+            // Dapr Schema Registry
+            services.AddDaprSchemaRegistry(stateStoreOptions.StateStoreName);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
