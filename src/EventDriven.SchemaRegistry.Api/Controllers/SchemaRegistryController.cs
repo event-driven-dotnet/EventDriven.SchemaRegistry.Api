@@ -35,9 +35,15 @@ namespace EventDriven.SchemaRegistry.Api.Controllers
         [Route("{topic}")]
         public async Task<IActionResult> AddSchema([FromRoute] string topic, [FromBody] JsonElement element)
         {
-            var schema = element.ToString();
-            var result = await _schemaRegistry.AddSchema(topic, schema);
-            return !result ? BadRequest() : Ok();
+            var content = element.ToString();
+            var schema = new Schema
+            {
+                Topic = topic,
+                Content = content
+            };
+            var result = await _schemaRegistry.AddSchema(schema);
+            return !result ? BadRequest() : CreatedAtAction(nameof(GetSchema), 
+                new {topic}, schema);
         }
         
         // PUT api/schema/topic
@@ -45,9 +51,14 @@ namespace EventDriven.SchemaRegistry.Api.Controllers
         [Route("{topic}")]
         public async Task<IActionResult> UpdateSchema([FromRoute] string topic, [FromBody] JsonElement element)
         {
-            var schema = element.ToString();
-            var result = await _schemaRegistry.UpdateSchema(topic, schema);
-            return !result ? BadRequest() : Ok();
+            var content = element.ToString();
+            var schema = new Schema
+            {
+                Topic = topic,
+                Content = content
+            };
+            var result = await _schemaRegistry.UpdateSchema(schema);
+            return !result ? BadRequest() : Ok(schema);
         }
         
         // DELETE api/schema/topic
@@ -56,7 +67,7 @@ namespace EventDriven.SchemaRegistry.Api.Controllers
         public async Task<IActionResult> RemoveSchema([FromRoute] string topic)
         {
             var result = await _schemaRegistry.RemoveSchema(topic);
-            return !result ? BadRequest() : Ok();
+            return !result ? BadRequest() : NoContent();
         }
     }
 }

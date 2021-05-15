@@ -1,10 +1,9 @@
-using EventDriven.SchemaRegistry.Dapr;
+using EventDriven.SchemaRegistry.Mongo;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
 namespace EventDriven.SchemaRegistry.Api
@@ -28,11 +27,16 @@ namespace EventDriven.SchemaRegistry.Api
             });
             
             // Configuration
-            var stateStoreOptions = new DaprStateStoreOptions();
-            Configuration.GetSection(nameof(DaprStateStoreOptions)).Bind(stateStoreOptions);
+            var stateStoreOptions = new MongoStateStoreOptions();
+            Configuration.GetSection(nameof(MongoStateStoreOptions)).Bind(stateStoreOptions);
             
             // Dapr Schema Registry
-            services.AddDaprSchemaRegistry(stateStoreOptions.StateStoreName);
+            services.AddMongoSchemaRegistry(options =>
+            {
+                options.ConnectionString = stateStoreOptions.ConnectionString;
+                options.DatabaseName = stateStoreOptions.DatabaseName;
+                options.SchemasCollectionName = stateStoreOptions.SchemasCollectionName;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

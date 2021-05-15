@@ -5,8 +5,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="EventDriven.SchemaRegistry.Dapr" Version="1.0.0-beta1" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+        <PackageReference Include="EventDriven.SchemaRegistry.Mongo" Version="1.0.0-beta4" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
     </ItemGroup>
 
 </Project>
